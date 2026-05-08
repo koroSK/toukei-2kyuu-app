@@ -103,6 +103,7 @@ function renderHome(app) {
       <div class="header-inner">
         <h1 class="logo">統計検定2級 学習アプリ</h1>
         <button class="btn-icon" onclick="navigate('progress')" title="進捗">📈</button>
+        <button class="btn-icon calc-toggle-btn" onclick="toggleCalculator()" title="電卓">🔢</button>
       </div>
     </header>
     <main class="home-main">
@@ -172,6 +173,7 @@ function renderStudyTop(app) {
       <div class="header-inner">
         <button class="btn-back" onclick="navigate('home')">← ホーム</button>
         <h1>学習モード</h1>
+        <button class="btn-icon calc-toggle-btn" onclick="toggleCalculator()" title="電卓">🔢</button>
       </div>
     </header>
     <main class="study-top">
@@ -213,6 +215,7 @@ function renderStudyUnit(app, unitId) {
       <div class="header-inner">
         <button class="btn-back" onclick="state.currentUnit=null;render()">← 単元一覧</button>
         <h1>${unit.icon} ${unit.title}</h1>
+        <button class="btn-icon calc-toggle-btn" onclick="toggleCalculator()" title="電卓">🔢</button>
       </div>
     </header>
     <main class="study-unit">
@@ -454,9 +457,6 @@ function renderExam(app) {
         </div>
       </main>
     </div>
-    <div id="calculator" class="calculator hidden">
-      ${renderCalculator()}
-    </div>
   `;
   renderMath();
 }
@@ -641,27 +641,6 @@ let calcPrev = '';
 let calcOp = null;
 let calcNew = true;
 
-function renderCalculator() {
-  return `
-    <div class="calc-inner">
-      <div class="calc-header">電卓 <button onclick="toggleCalculator()" class="calc-close">✕</button></div>
-      <div id="calc-display" class="calc-display">${calcDisplay}</div>
-      <div class="calc-buttons">
-        ${[
-          ['C','±','%','÷'],
-          ['7','8','9','×'],
-          ['4','5','6','−'],
-          ['1','2','3','＋'],
-          ['0','','.',  '＝']
-        ].map(row => row.map(k => k
-          ? `<button class="calc-btn ${['÷','×','−','＋','＝'].includes(k)?'op':k==='C'?'clear':''}" onclick="calcInput('${k}')">${k}</button>`
-          : '<button class="calc-btn zero" onclick="calcInput(\'0\')">0</button>'
-        ).join('')).join('')}
-      </div>
-    </div>
-  `;
-}
-
 function toggleCalculator() {
   const el = document.getElementById('calculator');
   if (el) el.classList.toggle('hidden');
@@ -703,5 +682,37 @@ function calcInput(k) {
 
 // ==================== INIT ====================
 window.addEventListener('DOMContentLoaded', () => {
+  // 電卓を body に一度だけ生成（render のたびに消えない）
+  const calcEl = document.createElement('div');
+  calcEl.id = 'calculator';
+  calcEl.className = 'calculator hidden';
+  calcEl.innerHTML = `
+    <div class="calc-inner">
+      <div class="calc-header">電卓 <button onclick="toggleCalculator()" class="calc-close">✕</button></div>
+      <div id="calc-display" class="calc-display">0</div>
+      <div class="calc-buttons">
+        <button class="calc-btn clear" onclick="calcInput('C')">C</button>
+        <button class="calc-btn" onclick="calcInput('±')">±</button>
+        <button class="calc-btn" onclick="calcInput('%')">%</button>
+        <button class="calc-btn op" onclick="calcInput('÷')">÷</button>
+        <button class="calc-btn" onclick="calcInput('7')">7</button>
+        <button class="calc-btn" onclick="calcInput('8')">8</button>
+        <button class="calc-btn" onclick="calcInput('9')">9</button>
+        <button class="calc-btn op" onclick="calcInput('×')">×</button>
+        <button class="calc-btn" onclick="calcInput('4')">4</button>
+        <button class="calc-btn" onclick="calcInput('5')">5</button>
+        <button class="calc-btn" onclick="calcInput('6')">6</button>
+        <button class="calc-btn op" onclick="calcInput('−')">−</button>
+        <button class="calc-btn" onclick="calcInput('1')">1</button>
+        <button class="calc-btn" onclick="calcInput('2')">2</button>
+        <button class="calc-btn" onclick="calcInput('3')">3</button>
+        <button class="calc-btn op" onclick="calcInput('＋')">＋</button>
+        <button class="calc-btn zero" onclick="calcInput('0')">0</button>
+        <button class="calc-btn" onclick="calcInput('.')">.</button>
+        <button class="calc-btn op" onclick="calcInput('＝')">＝</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(calcEl);
   render();
 });

@@ -159,9 +159,25 @@ body {
 .study-text strong { color: var(--primary-dark); }
 .key-point {
   background: #fef9c3; border-left: 3px solid #f59e0b;
-  padding: .5rem .75rem; margin: .5rem 0;
-  border-radius: 0 6px 6px 0; font-size: .85rem; line-height: 1.7;
+  padding: .6rem .85rem; margin: .75rem 0;
+  border-radius: 0 6px 6px 0; font-size: .875rem; line-height: 1.8;
 }
+.example-box {
+  background: #eff6ff; border-left: 3px solid var(--primary);
+  padding: .6rem .85rem; margin: .75rem 0;
+  border-radius: 0 6px 6px 0; font-size: .875rem; line-height: 1.85;
+}
+.example-box strong { color: var(--primary-dark); }
+.study-text p {
+  margin: .6rem 0; line-height: 1.85;
+}
+.study-text ul, .study-text ol {
+  padding-left: 1.4rem; margin: .5rem 0;
+}
+.study-text ul li, .study-text ol li {
+  margin: .35rem 0; line-height: 1.7;
+}
+.study-text ol { list-style-type: decimal; }
 .study-unit-footer { margin-top: 1.5rem; text-align: center; }
 
 /* ==================== Exam ==================== */
