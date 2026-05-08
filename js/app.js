@@ -49,6 +49,28 @@ function shuffle(arr) {
   return a;
 }
 
+// 選択肢をシャッフルし、正解インデックスを追随させる
+function shuffleOptions(q) {
+  const order = shuffle([0, 1, 2, 3]);
+  return {
+    ...q,
+    options: order.map(i => q.options[i]),
+    answer: order.indexOf(q.answer)
+  };
+}
+
+// 単元バランスを保って35問を抽出する
+const EXAM_ALLOCATION = { 1:4, 2:3, 3:3, 4:4, 5:3, 6:3, 7:5, 8:3, 9:3, 10:2, 11:2 };
+
+function buildExamQuestions() {
+  const selected = [];
+  for (const [unit, count] of Object.entries(EXAM_ALLOCATION)) {
+    const pool = QUESTIONS.filter(q => q.unit === Number(unit));
+    shuffle(pool).slice(0, count).forEach(q => selected.push(shuffleOptions(q)));
+  }
+  return shuffle(selected); // 単元順にならないよう最後に全体もシャッフル
+}
+
 function renderMath() {
   if (window.renderMathInElement) {
     renderMathInElement(document.getElementById('app'), {
@@ -238,7 +260,7 @@ function renderStudyUnit(app, unitId) {
 
 // ==================== UNIT TEST ====================
 function startUnitTest(unitId) {
-  const unitQs = shuffle(QUESTIONS.filter(q => q.unit === unitId));
+  const unitQs = shuffle(QUESTIONS.filter(q => q.unit === unitId)).map(shuffleOptions);
   state.unitTest = {
     questions: unitQs,
     answers: {},
@@ -364,8 +386,7 @@ function renderUnitTestResult(app) {
 
 // ==================== EXAM MODE ====================
 function startExam() {
-  const allQ = QUESTIONS;
-  const examQ = shuffle(allQ).slice(0, 35);
+  const examQ = buildExamQuestions();
   state.exam = {
     questions: examQ,
     answers: {},
