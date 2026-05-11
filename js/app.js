@@ -236,7 +236,7 @@ function renderStudyUnit(app, unitId) {
   app.innerHTML = `
     <header class="app-header">
       <div class="header-inner">
-        <button class="btn-back" onclick="state.currentUnit=null;render()">← 単元一覧</button>
+        <button class="btn-back" onclick="state.currentUnit=null;removeFocusToggle();render()">← 単元一覧</button>
         <h1>${unit.icon} ${unit.title}</h1>
         <button class="btn-icon calc-toggle-btn" onclick="toggleCalculator()" title="電卓">🔢</button>
       </div>
@@ -257,6 +257,8 @@ function renderStudyUnit(app, unitId) {
       </div>
     </main>
   `;
+  // フォーカスモードボタンを追加
+  setTimeout(addFocusToggle, 100);
 }
 
 // ==================== UNIT TEST ====================
@@ -333,6 +335,7 @@ function submitUnitTest() {
   state.unitTest.submitted = true;
   const ut = state.unitTest;
   const correct = ut.questions.filter((q, i) => ut.answers[i] === q.answer).length;
+  const pct = Math.round(correct / ut.questions.length * 100);
   // 進捗保存
   const prog = loadProgress();
   if (!prog.unitAnswers) prog.unitAnswers = {};
@@ -342,7 +345,10 @@ function submitUnitTest() {
     }
   });
   saveProgress(prog);
+  removeFocusToggle();
   render();
+  // 70%以上なら紙吹雪 🎉
+  if (pct >= 70) setTimeout(launchConfetti, 300);
 }
 
 function renderUnitTestResult(app) {
@@ -523,6 +529,9 @@ function submitExam(timeUp) {
   });
   saveProgress(prog);
   render();
+  // 70%以上で紙吹雪 🎉
+  const pct = Math.round(ex.questions.filter((q,i)=>ex.answers[i]===q.answer).length / ex.questions.length * 100);
+  if (pct >= 70 && !timeUp) setTimeout(launchConfetti, 400);
 }
 
 // ==================== REVIEW ====================
@@ -738,3 +747,58 @@ window.addEventListener('DOMContentLoaded', () => {
   document.body.appendChild(calcEl);
   render();
 });
+
+// ==================== FOCUS MODE ====================
+let focusMode = false;
+
+function toggleFocusMode() {
+  focusMode = !focusMode;
+  document.body.classList.toggle('focus-mode', focusMode);
+  const btn = document.getElementById('focus-toggle-btn');
+  if (btn) btn.textContent = focusMode ? '🔲' : '⛶';
+}
+
+function addFocusToggle() {
+  const existing = document.getElementById('focus-toggle-btn');
+  if (existing) return;
+  const btn = document.createElement('button');
+  btn.id = 'focus-toggle-btn';
+  btn.className = 'focus-toggle';
+  btn.title = 'フォーカスモード';
+  btn.textContent = '⛶';
+  btn.onclick = toggleFocusMode;
+  document.body.appendChild(btn);
+}
+
+function removeFocusToggle() {
+  const btn = document.getElementById('focus-toggle-btn');
+  if (btn) btn.remove();
+  if (focusMode) {
+    focusMode = false;
+    document.body.classList.remove('focus-mode');
+  }
+}
+
+// ==================== CONFETTI ====================
+function launchConfetti() {
+  const colors = ['#00e676','#0f9fff','#ffab40','#ff6b8a','#7dd3fc','#84fab0'];
+  const count = 28;
+  for (let i = 0; i < count; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'confetti-particle';
+      el.style.cssText = `
+        left: ${20 + Math.random() * 60}vw;
+        top: ${30 + Math.random() * 20}vh;
+        background: ${colors[Math.floor(Math.random() * colors.length)]};
+        width: ${5 + Math.random() * 7}px;
+        height: ${5 + Math.random() * 7}px;
+        border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+        animation-duration: ${0.8 + Math.random() * 0.8}s;
+        animation-delay: ${Math.random() * 0.3}s;
+      `;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 2000);
+    }, i * 30);
+  }
+}
