@@ -130,16 +130,20 @@ function renderHome(app) {
     </header>
     <main class="home-main">
       <div class="hero">
-        <p class="hero-sub">全11単元・150問以上で試験範囲を完全網羅</p>
+        <h2 class="hero-title">統計検定2級 合格を目指そう</h2>
+        <p class="hero-sub">全11単元 · 115問 · 試験範囲を完全網羅</p>
+      </div>
+      <div class="stats-bar">
+        ${renderHomeStats()}
       </div>
       <div class="mode-cards">
         <div class="mode-card study-card" onclick="navigate('study')">
           <div class="mode-card-icon">📚</div>
           <h2>学習モード</h2>
-          <p>単元別にテキスト・数式・表で概念を学ぶ</p>
+          <p>単元別にテキスト・数式・具体例で概念を学ぶ</p>
           <ul>
-            <li>全11単元のテキスト学習</li>
-            <li>数式・グラフ付き解説</li>
+            <li>全11単元のテキスト解説</li>
+            <li>重要ポイント・具体例付き</li>
             <li>単元別確認テスト</li>
           </ul>
           <button class="btn btn-study">学習を始める</button>
@@ -147,17 +151,14 @@ function renderHome(app) {
         <div class="mode-card exam-card" onclick="startExam()">
           <div class="mode-card-icon">📝</div>
           <h2>試験モード</h2>
-          <p>本番を想定したCBT形式（35問・90分）</p>
+          <p>本番準拠のCBT形式 — 35問 · 90分</p>
           <ul>
-            <li>35問・90分のタイマー付き</li>
-            <li>問題フラグ機能</li>
-            <li>内蔵電卓</li>
+            <li>単元バランス保証の出題</li>
+            <li>選択肢ランダム · フラグ機能</li>
+            <li>採点後に全問解説</li>
           </ul>
           <button class="btn btn-exam">試験を開始</button>
         </div>
-      </div>
-      <div class="stats-bar">
-        ${renderHomeStats()}
       </div>
     </main>
   `;
@@ -357,7 +358,7 @@ function renderUnitTestResult(app) {
       </div>
     </header>
     <main class="review-main">
-      <div class="result-summary">
+      <div class="result-summary ${pct>=70?'result-pass':'result-fail'}">
         <div class="result-score">${correct}<span>/${total}問</span></div>
         <div class="result-pct ${pct>=70?'pass':'fail'}">${pct}%</div>
         <div class="result-msg">${pct>=80?'✅ 優秀！':pct>=60?'📚 もう少し復習を':'⚠️ 要復習'}</div>
@@ -538,7 +539,7 @@ function renderReview(app) {
       </div>
     </header>
     <main class="review-main">
-      <div class="result-summary">
+      <div class="result-summary ${pct>=70?'result-pass':'result-fail'}">
         <div class="result-score">${correct}<span>/${total}問</span></div>
         <div class="result-pct ${pct>=70?'pass':'fail'}">${pct}%</div>
         <div class="result-msg">${pct>=70?'✅ 合格ライン到達！':'📚 合格まであと少し（目安：70%）'}</div>
