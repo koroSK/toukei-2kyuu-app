@@ -683,6 +683,11 @@ function calcInput(k) {
   if (k === 'C') { calcDisplay = '0'; calcPrev = ''; calcOp = null; calcNew = true; }
   else if (k === '±') { calcDisplay = String(-parseFloat(calcDisplay)); }
   else if (k === '%') { calcDisplay = String(parseFloat(calcDisplay) / 100); }
+  else if (k === '√') {
+    const v = parseFloat(calcDisplay);
+    calcDisplay = v < 0 ? 'Error' : String(parseFloat(Math.sqrt(v).toFixed(10)));
+    calcNew = true;
+  }
   else if (['÷','×','−','＋'].includes(k)) {
     calcPrev = calcDisplay;
     calcOp = k;
@@ -738,7 +743,8 @@ window.addEventListener('DOMContentLoaded', () => {
         <button class="calc-btn" onclick="calcInput('2')">2</button>
         <button class="calc-btn" onclick="calcInput('3')">3</button>
         <button class="calc-btn op" onclick="calcInput('＋')">＋</button>
-        <button class="calc-btn zero" onclick="calcInput('0')">0</button>
+        <button class="calc-btn" onclick="calcInput('0')">0</button>
+        <button class="calc-btn" onclick="calcInput('√')">√</button>
         <button class="calc-btn" onclick="calcInput('.')">.</button>
         <button class="calc-btn op" onclick="calcInput('＝')">＝</button>
       </div>

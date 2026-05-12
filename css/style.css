@@ -796,7 +796,7 @@ body {
 .calc-btn.op { background: var(--primary-subtle); color: var(--primary); border-color: rgba(15,159,255,0.2); }
 .calc-btn.op:hover { background: var(--primary); color: #fff; box-shadow: 0 0 12px var(--primary-glow); }
 .calc-btn.clear { color: var(--coral); }
-.calc-btn.zero { grid-column: span 2; }
+/* .calc-btn.zero は削除（√ボタン追加により0は1マス分に） */
 
 /* ============================================================
    Micro-interactions: 正解時のパーティクル
